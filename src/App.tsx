@@ -1,26 +1,38 @@
-import { Layout } from 'antd';
+import { Layout, Menu  } from 'antd';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
+import AdminSdkManager from './components/adminSdk/AdminSdkManager.tsx';
 
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 const App = () => {
-  return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header
-        style={{
-          color: '#fff',
-          textAlign: 'center',
-          fontSize: '1.5rem',
-          backgroundColor: '#1890ff',
-        }}
-      >
-        📡 FCM Middleware Dashboard
-      </Header>
-      <Content style={{ padding: '20px' }}>
-        <Dashboard />
-      </Content>
-    </Layout>
-  );
+    return (
+      <Router>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Sider theme="light">
+            <Menu mode="inline" defaultSelectedKeys={['dashboard']}>
+              <Menu.Item key="dashboard">
+                <Link to="/">📊 Dashboard</Link>
+              </Menu.Item>
+              <Menu.Item key="admin-sdk">
+                <Link to="/admin-sdk">📂 Admin SDK Upload</Link>
+              </Menu.Item>
+            </Menu>
+          </Sider>
+          <Layout>
+            <Header style={{ backgroundColor: '#1890ff', color: 'white', textAlign: 'center', fontSize: '1.5rem' }}>
+              📡 FCM Middleware Dashboard
+            </Header>
+            <Content style={{ padding: '20px' }}>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/admin-sdk" element={<AdminSdkManager />} />
+              </Routes>
+            </Content>
+          </Layout>
+        </Layout>
+      </Router>
+    );
 };
 
 export default App;
