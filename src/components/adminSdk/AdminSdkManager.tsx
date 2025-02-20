@@ -20,6 +20,7 @@ const AdminSdkManager = () => {
     } catch (error) {
       console.error('SDK 목록 가져오기 실패:', error);
     }
+
   };
 
   const { getRootProps, getInputProps } = useDropzone({
