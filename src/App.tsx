@@ -1,6 +1,6 @@
 import { Layout, Menu  } from 'antd';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
+import PushMetricsDashboard from './pages/PushMetricsDashboard.tsx';
 import AdminSdkManager from './components/adminSdk/AdminSdkManager.tsx';
 
 const { Header, Content, Sider } = Layout;
@@ -25,7 +25,7 @@ const App = () => {
             </Header>
             <Content style={{ padding: '20px' }}>
               <Routes>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={<PushMetricsDashboard />} />
                 <Route path="/admin-sdk" element={<AdminSdkManager />} />
               </Routes>
             </Content>

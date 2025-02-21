@@ -3,6 +3,7 @@ import {useState, useEffect } from "react";
 import axios from 'axios';
 import { Table, Card, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 const AdminSdkManager = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -23,7 +24,7 @@ const AdminSdkManager = () => {
 
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'application/json': ['.json'] },
     maxFiles: 1,
     onDrop: (acceptedFiles) => {
@@ -55,29 +56,58 @@ const AdminSdkManager = () => {
   };
 
   const columns = [
-    { title: '프로젝트 ID', dataIndex: 'projectId', key: 'projectId' },
-    { title: '업로드 시간', dataIndex: 'uploadedAt', key: 'uploadedAt' },
+    {
+      title: '📌 프로젝트 ID',
+      dataIndex: 'projectId',
+      key: 'projectId',
+      render: (text: string) => <span className="font-semibold text-blue-600">{text}</span>,
+    },
+    {
+      title: '📅 업로드 시간',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text: string) => <span>{dayjs(text).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    },
   ];
 
   return (
     <div className="flex flex-col items-center p-6">
-      <Card className="w-full max-w-2xl p-4 shadow-lg">
-        <div {...getRootProps()} className="border-dashed border-2 border-blue-500 p-6 rounded-lg cursor-pointer hover:bg-blue-50 transition">
+      <Card className="w-full max-w-3xl p-6 shadow-lg border border-gray-200">
+        <div
+          {...getRootProps()}
+          className={`border-dashed border-2 p-6 rounded-lg cursor-pointer transition ${
+            isDragActive ? "bg-blue-100 border-blue-500" : "bg-white border-gray-400"
+          }`}
+        >
           <input {...getInputProps()} />
-          <p className="text-gray-600">📂 여기에 admin-sdk.json 파일을 드래그하거나 클릭하여 선택하세요.</p>
+          <p className="text-gray-600">
+            📂 여기에 <strong>admin-sdk.json</strong> 파일을 드래그하거나 클릭하여 선택하세요.
+          </p>
         </div>
 
-        {file && <p className="mt-2 text-gray-700">📁 선택된 파일: <strong>{file.name}</strong></p>}
+        {file && (
+          <p className="mt-2 text-gray-700">
+            📁 선택된 파일: <strong>{file.name}</strong>
+          </p>
+        )}
 
-        <Button onClick={handleUpload} type="primary" icon={<UploadOutlined />} className="mt-4">
-          업로드
-        </Button>
+        <div className="flex justify-center mt-4">
+          <Button onClick={handleUpload} type="primary" icon={<UploadOutlined />} className="px-6">
+            업로드
+          </Button>
+        </div>
 
-        {uploadStatus && <p className="mt-2 text-green-600">{uploadStatus}</p>}
+        {uploadStatus && <p className="mt-4 text-green-600 text-center">{uploadStatus}</p>}
       </Card>
 
-      <Card title="📜 등록된 SDK 파일 목록" className="w-full max-w-2xl mt-6 shadow-lg">
-        <Table dataSource={sdkFiles} columns={columns} rowKey="projectId" />
+      <Card title="📜 등록된 SDK 파일 목록" className="w-full max-w-3xl mt-6 shadow-lg border border-gray-200">
+        <Table
+          dataSource={sdkFiles}
+          columns={columns}
+          rowKey="projectId"
+          pagination={{ pageSize: 5 }}
+          className="mt-4"
+        />
       </Card>
     </div>
   );
