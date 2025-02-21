@@ -1,5 +1,5 @@
 export type PushMetricDTO = {
-  instance: string;
+  projectId: string;
   successCount: number;
-  failCount: number;
+  failureCount: number;
 };
