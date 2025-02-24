@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/pro-components": "^2.8.6",
+    "@ant-design/pro-layout": "^7.22.3",
     "@tanstack/react-query": "^5.66.0",
     "antd": "^5.24.0",
     "axios": "^1.7.9",

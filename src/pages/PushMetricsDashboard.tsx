@@ -56,12 +56,12 @@ const PushMetricsDashboard = () => {
         ) : (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={transformData(data ?? [])}>
-              <XAxis dataKey="name" stroke="#4A4A4A" />
-              <YAxis stroke="#4A4A4A" />
+              <XAxis dataKey="name" stroke="#E0E0E0" /> {/* 회색으로 가독성 향상 */}
+              <YAxis stroke="#E0E0E0" />
               <Tooltip />
               <Legend />
-              <Bar dataKey="success" fill="#A7C7E7" /> {/* 부드러운 파란색 */}
-              <Bar dataKey="failure" fill="#FFCCBC" /> {/* 피치톤 */}
+              <Bar dataKey="success" fill="#66BB6A" /> {/* 밝은 녹색 */}
+              <Bar dataKey="failure" fill="#E57373" /> {/* 밝은 레드 */}
             </BarChart>
           </ResponsiveContainer>
         )}
