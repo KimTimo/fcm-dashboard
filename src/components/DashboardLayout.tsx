@@ -11,7 +11,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       layout="mix" // 사이드 메뉴 레이아웃
       fixSiderbar // 사이드바 고정
       fixedHeader // 헤더 고정
-      navTheme="realDark" // 라이트 테마 적용
+      navTheme="light" // 라이트 테마 적용
       route={{
         routes: [
           {
