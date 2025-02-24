@@ -7,11 +7,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <ProLayout
       title="FCM Middleware Dashboard"
-      logo="🚀"
+      logo="https://cdn-common-dev.s3.ap-northeast-2.amazonaws.com/rang/bizbee.png"
       layout="mix" // 사이드 메뉴 레이아웃
       fixSiderbar // 사이드바 고정
       fixedHeader // 헤더 고정
-      navTheme="light" // 라이트 테마 적용
+      navTheme="realDark" // 라이트 테마 적용
       route={{
         routes: [
           {
