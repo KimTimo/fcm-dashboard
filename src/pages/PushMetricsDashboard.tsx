@@ -2,6 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Button, Card, Spin } from 'antd';
 import RequestList from '../components/RequestList.tsx';
+import SuccessRateChart from '../components/SuccessRateChart.tsx';
 import { useProjectList } from '../services/useProjectList.ts';
 import {fetchPushMetrics} from '../services/usePushMetrics.ts';
 import { useDashboardStore } from '../state/dashboardStore';
@@ -31,6 +32,10 @@ const PushMetricsDashboard = () => {
       {/* ✅ 버튼과 로딩을 중앙 정렬 */}
       <div className="flex flex-col items-center gap-4 mb-6">
         <div className="flex justify-center items-center gap-4">
+          {/* ✅ 성공/실패율 대시보드 추가 */}
+          <div className="mt-8 w-full">
+            <SuccessRateChart/>
+          </div>
           {projectLoading ? (
             <Spin size="small"/>
           ) : (
@@ -73,6 +78,7 @@ const PushMetricsDashboard = () => {
             <div className="mt-8 w-full">
               <RequestList projectId={projectId}/>
             </div>
+
           </>
         )}
       </div>
