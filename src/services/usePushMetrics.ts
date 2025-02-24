@@ -13,7 +13,6 @@ export const usePushMetrics = (projectId: string) => {
   return useQuery({
     queryKey: ['pushMetrics', projectId], // 프로젝트 ID를 queryKey에 포함
     queryFn: () => fetchPushMetrics(projectId), // projectId를 전달
-    staleTime: 1000 * 60 * 5, // 5분 동안 캐싱 유지
     enabled: !!projectId, // projectId가 있을 때만 실행
   });
 };

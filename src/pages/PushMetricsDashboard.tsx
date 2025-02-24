@@ -1,8 +1,10 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import {usePushMetrics} from '../services/usePushMetrics.ts';
+import { useProjectList } from '../services/useProjectList.ts';
+import {fetchPushMetrics} from '../services/usePushMetrics.ts';
 import { useDashboardStore } from '../state/dashboardStore';
 import { Button, Card, Spin } from 'antd';
 import {PushMetricDTO} from "../dto/PushMetricDTO.ts";
+import {useQuery} from "@tanstack/react-query";
 
 const transformData = (metrics: PushMetricDTO[] | undefined) => {
   if (!metrics) return []; // 데이터가 없으면 빈 배열 반환
@@ -16,24 +18,32 @@ const transformData = (metrics: PushMetricDTO[] | undefined) => {
 
 const PushMetricsDashboard = () => {
   const { projectId, setProjectId } = useDashboardStore();
-  const { data, isLoading, error } = usePushMetrics(projectId); // ✅ 커스텀 훅 사용
+  const { data: projectList, isLoading: projectLoading } = useProjectList(); // ✅ 프로젝트 리스트 불러오기
+  const { data, isLoading, error } = useQuery<PushMetricDTO[]>({
+    queryKey: ['pushMetrics', projectId],
+    queryFn: () => fetchPushMetrics(projectId),
+  });
 
   return (
     <Card title="📊 FCM 전송 모니터링" className="w-full max-w-4xl shadow-md bg-[#F8F9FA] p-6 rounded-lg border border-[#D1D5DB]">
       {/* ✅ 버튼과 로딩을 중앙 정렬 */}
       <div className="flex flex-col items-center gap-4 mb-6">
         <div className="flex justify-center items-center gap-4">
-          {['bizbee-oms', 'bizbee-service', 'all'].map((id) => (
-            <Button
-              key={id}
-              type={projectId === id ? 'primary' : 'default'}
-              className={`px-4 py-2 rounded-md text-white ${
-                projectId === id ? 'bg-[#AEDFF7] hover:bg-[#98D0E3]' : 'bg-[#FFCCBC] hover:bg-[#F5A891]'
-              }`}
-              onClick={() => setProjectId(id)}>
-              {id === 'all' ? '전체 보기' : `${id.toUpperCase()} 보기`}
-            </Button>
-          ))}
+          {projectLoading ? ( // ✅ 프로젝트 리스트 로딩 중
+            <Spin size="small"/>
+          ) : (
+            projectList?.map((id) => (
+              <Button
+                key={id}
+                type={projectId === id ? 'primary' : 'default'}
+                className={`px-4 py-2 rounded-md text-white ${
+                  projectId === id ? 'bg-[#AEDFF7] hover:bg-[#98D0E3]' : 'bg-[#FFCCBC] hover:bg-[#F5A891]'
+                }`}
+                onClick={() => setProjectId(id)}>
+                {id === 'all' ? '전체 보기' : `${id.toUpperCase()} 보기`}
+              </Button>
+            ))
+          )}
         </div>
 
         {/* ✅ 로딩 스피너 중앙 정렬 */}
