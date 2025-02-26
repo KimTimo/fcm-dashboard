@@ -1,13 +1,16 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { Switch, DatePicker, Spin, Card } from 'antd';
 import { useSuccessRate } from '../services/useSuccessRate.ts';
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import {SuccessRateDTO} from "../dto/SuccessRateDTO.ts";
+import { useDashboardStore } from "../state/dashboardStore.ts"; // ✅ 추가
+import { SuccessRateDTO } from "../dto/SuccessRateDTO.ts";
+import RequestList from '../components/RequestList.tsx'; // ✅ 추가
 
 const { RangePicker } = DatePicker;
 
 const SuccessRateChart = () => {
+  const { projectId, setProjectId } = useDashboardStore(); // ✅ 상태 관리
   const [dateRange, setDateRange] = useState<[string, string]>([
     dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
     dayjs().format('YYYY-MM-DD'),
@@ -22,10 +25,18 @@ const SuccessRateChart = () => {
 // ✅ 데이터 변환
   const transformedData = data?.map((item: SuccessRateDTO) => ({
     name: item.projectId.toUpperCase(),
-    success: isSuccessRateMode ? item.successCount : item.successCount, // 성공 개수
-    failure: isSuccessRateMode ? item.failureCount : item.failureCount, // 실패 개수
-    failureRate: isSuccessRateMode ? item.failureRate : undefined, // 실패율 (%)
+    projectId: item.projectId, // ✅ 클릭 시 전달할 projectId 추가
+    success: item.successCount,
+    failure: item.failureCount,
+    failureRate: isSuccessRateMode ? item.failureRate : undefined,
   })) || [];
+
+  // ✅ 차트 클릭 시 해당 프로젝트 요청 리스트 표시
+  const handleBarClick = (data: any) => {
+    if (data?.projectId) {
+      setProjectId(data.projectId);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -65,17 +76,39 @@ const SuccessRateChart = () => {
         ) : error ? (
           <p className="text-red-500 text-center">❌ 데이터 로딩 실패!</p>
         ) : (
+          <>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={transformedData}>
+            <BarChart data={transformedData} onClick={({ activePayload }) => handleBarClick(activePayload?.[0]?.payload)}>
               <XAxis dataKey="name" stroke="#E0E0E0" />
               <YAxis stroke="#E0E0E0" />
               <Tooltip />
               <Legend />
-              <Bar dataKey="success" fill="#66BB6A" />
-              <Bar dataKey="failure" fill="#E57373" />
-              {isSuccessRateMode && <Bar dataKey="failureRate" fill="#FFD700" />} {/* 실패율 추가 */}
+              <Bar dataKey="success" fill="#66BB6A">
+                {transformedData.map((_entry: any, index: any) => (
+                  <Cell key={`cell-success-${index}`} cursor="pointer" />
+                ))}
+              </Bar>
+              <Bar dataKey="failure" fill="#E57373">
+                {transformedData.map((_entry: any, index: any) => (
+                  <Cell key={`cell-failure-${index}`} cursor="pointer" />
+                ))}
+              </Bar>
+              {isSuccessRateMode && (
+                <Bar dataKey="failureRate" fill="#FFD700">
+                  {transformedData.map((_entry: any, index: any) => (
+                    <Cell key={`cell-failureRate-${index}`} cursor="pointer" />
+                  ))}
+                </Bar>
+              )}
             </BarChart>
           </ResponsiveContainer>
+          {/* ✅ 선택한 프로젝트 요청 리스트 */}
+          {projectId && (
+            <div className="mt-8 w-full">
+              <RequestList projectId={projectId} />
+            </div>
+          )}
+        </>
         )}
       </Card>
     </div>
