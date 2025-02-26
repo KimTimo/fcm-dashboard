@@ -1,4 +1,5 @@
 export interface RequestItemDTO {
+  corpCd: string;
   requestId: string;
   tokensSent: number;
   createdAt: string;

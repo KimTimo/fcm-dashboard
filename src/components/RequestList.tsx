@@ -15,6 +15,13 @@ const RequestList = ({ projectId }: RequestListProps) => {
   // ✅ 테이블 컬럼 정의 (정렬 추가)
   const columns = [
     {
+      title: 'Corporation',
+      dataIndex: 'corpCd',
+      key: 'corpCd',
+      sorter: (a: RequestItemDTO, b: RequestItemDTO) => a.requestId.localeCompare(b.requestId),
+      render: (requestId: string) => <span className="text-blue-400 cursor-pointer">{requestId}</span>, // ✅ 클릭 스타일 적용
+    },
+    {
       title: 'Request ID',
       dataIndex: 'requestId',
       key: 'requestId',
