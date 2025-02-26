@@ -1,7 +1,12 @@
 import { Card } from 'antd';
 import SuccessRateChart from '../components/SuccessRateChart.tsx';
 import DashboardSummary from "../components/DashboardSummary.tsx";
+import { useInitializeProjectId } from "../state/dashboardStore.ts";
+
 const PushMetricsDashboard = () => {
+
+  // 프로젝트 ID 초기화 실행
+  useInitializeProjectId();
 
   return (
     <Card title="📊 FCM 전송 모니터링" className="w-full max-w-4xl shadow-md bg-[#F8F9FA] p-6 rounded-lg border border-[#D1D5DB]">
